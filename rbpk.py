@@ -1,4 +1,5 @@
 import sys
+import os
 import time
 import threading
 import requests
@@ -44,12 +45,12 @@ class OrderAutomationApp(QMainWindow):
 
     def get_logged_in_user(self):
         """
-        Fetch logged-in SaaS username.
-        This is injected from the SaaS app before launching.
-        Example:
-            sys._saas_logged_in_user = "ahmad123"
+        Fetch logged-in SaaS username from environment variable.
+        SaaS app must set:
+            os.environ["SAAS_USERNAME"] = "ahmad123"
+        before running this script.
         """
-        return getattr(sys, "_saas_logged_in_user", "Guest")
+        return os.environ.get("SAAS_USERNAME", "Guest")
 
     def init_ui(self):
         central = QWidget()
