@@ -42,14 +42,25 @@ class OrderAutomationApp(QMainWindow):
         self.info_signal.connect(lambda t, m: QMessageBox.information(self, t, m))
         self.error_signal.connect(lambda t, m: QMessageBox.critical(self, t, m))
 
+    def get_logged_in_user(self):
+        """
+        Fetch logged-in SaaS username.
+        This is injected from the SaaS app before launching.
+        Example:
+            sys._saas_logged_in_user = "ahmad123"
+        """
+        return getattr(sys, "_saas_logged_in_user", "Guest")
+
     def init_ui(self):
         central = QWidget()
         self.setCentralWidget(central)
         layout = QVBoxLayout(central)
 
-        # Username
+        # Username (pre-filled + read-only)
         layout.addWidget(QLabel("User ID:"))
         self.user_entry = QLineEdit()
+        self.user_entry.setText(self.get_logged_in_user())
+        self.user_entry.setReadOnly(True)
         layout.addWidget(self.user_entry)
 
         # Password
