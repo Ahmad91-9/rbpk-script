@@ -1,9 +1,9 @@
 import sys
-import os
 import time
 import threading
 import requests
 import pandas as pd
+import os
 
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QLabel, QLineEdit, QPushButton,
@@ -36,6 +36,8 @@ class OrderAutomationApp(QMainWindow):
         self.driver = None
         self.LOG_FILE = "log.txt"
 
+        self.username = self.get_logged_in_user()
+
         self.init_ui()
 
         # Connect signals
@@ -43,13 +45,10 @@ class OrderAutomationApp(QMainWindow):
         self.info_signal.connect(lambda t, m: QMessageBox.information(self, t, m))
         self.error_signal.connect(lambda t, m: QMessageBox.critical(self, t, m))
 
+    # 🔹 Hybrid username fetcher
     def get_logged_in_user(self):
-        """
-        Fetch logged-in SaaS username from environment variable.
-        SaaS app must set:
-            os.environ["SAAS_USERNAME"] = "ahmad123"
-        before running this script.
-        """
+        if len(sys.argv) > 1:  # check CLI argument
+            return sys.argv[1]
         return os.environ.get("SAAS_USERNAME", "Guest")
 
     def init_ui(self):
@@ -57,11 +56,11 @@ class OrderAutomationApp(QMainWindow):
         self.setCentralWidget(central)
         layout = QVBoxLayout(central)
 
-        # Username (pre-filled + read-only)
+        # Username (read-only, auto-filled)
         layout.addWidget(QLabel("User ID:"))
         self.user_entry = QLineEdit()
-        self.user_entry.setText(self.get_logged_in_user())
-        self.user_entry.setReadOnly(True)
+        self.user_entry.setText(self.username)
+        self.user_entry.setReadOnly(True)  # 🔒 make it uneditable
         layout.addWidget(self.user_entry)
 
         # Password
