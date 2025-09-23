@@ -195,11 +195,17 @@ class OrderAutomationApp(QMainWindow):
             self.wait_for_elem("//a[@id='btnLogin']", clickable=True).click()
 
             # Navigate to Order Page
-            self.wait_for_elem("//li[@id='li_ROOT_tab_Main_itm_Txn_li']//a[@id='ROOT_tab_Main_itm_Txn']", clickable=True).click()
-            self.wait_for_elem("//a[@id='pag_TxnRoot_tab_Main_itm_Order']", clickable=True).click()
+            self.wait_for_elem(
+                "//li[@id='li_ROOT_tab_Main_itm_Txn_li']//a[@id='ROOT_tab_Main_itm_Txn']",
+                clickable=True
+            ).click()
+            self.wait_for_elem(
+                "//a[@id='pag_TxnRoot_tab_Main_itm_Order']",
+                clickable=True
+            ).click()
             time.sleep(2)
 
-            # Process rows
+            # Process each row
             for index, row in df.iterrows():
                 try:
                     if pd.isna(row.get("Customer")):
@@ -214,6 +220,7 @@ class OrderAutomationApp(QMainWindow):
                         continue
 
                     self.write_log(f"\n[Row {index+1}] Processing: {row.to_dict()}")
+                    time.sleep(2)
 
                     self.wait_for_elem("//input[@id='pag_T_Order_btn_AddOrder_Value']", clickable=True).click()
                     self.handle_popup()
